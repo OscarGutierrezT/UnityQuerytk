@@ -1,0 +1,13 @@
+{
+  "name": "com.roxystudios.core",
+  "displayName": "Roxy Utilities",
+  "version": "1.0.0",
+  "unity": "2018.1",
+  "author": "Oscar Gutierrez",
+  "description": "This pachage contains a core of utilities to make a multiplayer games for Phothon",
+  "repository": {},
+  "type": "tool",
+  "dependencies": {
+    "com.unity.textmeshpro": "2.0.1"
+  }
+}
