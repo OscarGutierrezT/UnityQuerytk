@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Security;
-namespace Roxy.core {
+namespace Ezphera.QueryTK {
 	public class CloudWebTools
 	{
 
