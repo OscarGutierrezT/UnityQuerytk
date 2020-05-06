@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-namespace Roxy.core
+namespace Ezphera.QueryTK
 {
     [System.Serializable]
     public class SingleQuery
