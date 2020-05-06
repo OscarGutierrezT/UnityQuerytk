@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Roxy.core
+namespace Ezphera.QueryTK
 {
     [CreateAssetMenu(fileName = "QueryConfiguration", menuName = "ScriptableObjects/QueryConfiguration", order = 1)]
     public class QueryBaseConfiguration : ScriptableObject
