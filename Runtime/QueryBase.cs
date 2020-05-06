@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using UnityEngine;
-namespace Roxy.core
+namespace Ezphera.QueryTK
 {
     public class QueryBase : MonoBehaviour
     {
