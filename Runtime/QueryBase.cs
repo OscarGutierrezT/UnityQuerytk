@@ -1,4 +1,5 @@
-﻿using SimpleJSON;
+using SimpleJSON;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -9,12 +10,21 @@ namespace Ezphera.QueryTK
     public class QueryBase : MonoBehaviour
     {
         string urlRequest = "http://localhost/control-ezphera/ver-empleados.php";
+        public bool sendQueryOnStart;
+        public QueryResult queryResult { get; protected set; }
         public string queryUrlAditional;
         public List<SingleQuery> queryVars = new List<SingleQuery>(0);
         protected virtual void Awake()
         {
             var queryConfig = Resources.Load<QueryBaseConfiguration>("QueryConfiguration");
             urlRequest = (queryConfig.isTest || string.IsNullOrEmpty(queryConfig.urlQuery) ? queryConfig.urlQueryTest : queryConfig.urlQuery) + queryUrlAditional;
+        }
+        protected virtual void Start() 
+        {
+            if (sendQueryOnStart)
+            {
+                SendRequest();
+            }
         }
         protected virtual QueryResult Consultar()
         {
@@ -64,6 +74,12 @@ namespace Ezphera.QueryTK
             }
             return resultadoDigital;
         }
+        
+        public virtual void SendRequest()
+        {
+            queryResult = Consultar();
+        }
+
         public JSONArray GetArrFromNode(string nodeName)
         {
             if (queryResult != null)
@@ -71,6 +87,15 @@ namespace Ezphera.QueryTK
                 return queryResult.result["room_config"][nodeName].AsArray;
             }
             else return null;
+        }
+
+        public string GetStringFromNodeName(string nodeName)
+        {
+            if (queryResult != null)
+            {
+                return queryResult.result["room_config"][nodeName].Value;
+            }
+            else return string.Empty;
         }
     }
 }
