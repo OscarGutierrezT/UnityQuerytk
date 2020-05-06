@@ -1,10 +1,14 @@
 {
-  "name": "com.roxygames.querytk",
-  "displayName": "Roxy Query TK",
+  "name": "com.ezphera.querytk",
+  "displayName": "Ez Query TK",
   "version": "1.0.0",
   "unity": "2018.1",
-  "author": "Oscar Gutierrez",
-  "description": "In this versión have the basic query options, this may be updated with more characteristics",
+  "author": {
+    "name": "Oscar Gutierrez",
+    "email": "oscar.gutierrez@ezphera.net",
+    "url": "https://ezpheratech.com"
+  },
+  "description": "This package was created for speed up your developments, with this package you can connect ease with any API, you can request query of type POST, GET y PUT. The information that return will in json format so you use this for any purpose.",
   "repository": {},
   "type": "tool",
   "dependencies": {
