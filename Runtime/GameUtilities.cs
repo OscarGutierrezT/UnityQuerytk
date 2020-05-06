@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Roxy.core
+namespace Ezphera.QueryTK
 {
     public class GameUtilities : MonoBehaviour
     {
