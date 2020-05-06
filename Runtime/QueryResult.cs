@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
-namespace Roxy.core
+namespace Ezphera.QueryTK
 {
     public class QueryResult
     {
