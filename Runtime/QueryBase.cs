@@ -64,5 +64,13 @@ namespace Ezphera.QueryTK
             }
             return resultadoDigital;
         }
+        public JSONArray GetArrFromNode(string nodeName)
+        {
+            if (queryResult != null)
+            {
+                return queryResult.result["room_config"][nodeName].AsArray;
+            }
+            else return null;
+        }
     }
 }
