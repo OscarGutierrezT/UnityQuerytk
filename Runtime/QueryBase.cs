@@ -30,11 +30,11 @@ namespace Ezphera.QueryTK
                 SendRequest();
             }
         }
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             OnResultQueryCallback += OnResultQuery;
         }
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             OnResultQueryCallback -= OnResultQuery;
         }
