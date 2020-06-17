@@ -1,14 +1,18 @@
 using SimpleJSON;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
+//using System.IO;
+//using System.Net;
+//using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
+
 namespace Ezphera.QueryTK
 {
     public class QueryBase : MonoBehaviour
     {
+        Action<QueryResult> OnResultQueryCallback;
         string urlRequest = "http://localhost/control-ezphera/ver-empleados.php";
         public bool sendQueryOnStart;
         public QueryResult queryResult { get; protected set; }
@@ -26,11 +30,19 @@ namespace Ezphera.QueryTK
                 SendRequest();
             }
         }
-        protected virtual QueryResult Consultar()
+        private void OnEnable()
+        {
+            OnResultQueryCallback += OnResultQuery;
+        }
+        private void OnDisable()
+        {
+            OnResultQueryCallback -= OnResultQuery;
+        }
+        protected virtual IEnumerator Consultar()
         {
             QueryResult resultadoDigital = new QueryResult();
-            HttpWebResponse response = null;
-            Dictionary<string, string> headers = new Dictionary<string, string>();
+            //HttpWebResponse response = null;
+            //Dictionary<string, string> headers = new Dictionary<string, string>();
             string mensaje = "{";
             for (var i = 0; i < queryVars.Count; i++)
             {
@@ -46,38 +58,68 @@ namespace Ezphera.QueryTK
             }
             mensaje += "}";
             //Debug.Log(mensaje);
-            byte[] content = Encoding.ASCII.GetBytes(mensaje);
-            response = CloudWebTools.DoWebRequest(urlRequest, "POST", "", content, headers, true, false);
-            if (!CloudWebTools.IsErrorStatus(response))
+            using (UnityWebRequest request = UnityWebRequest.Put(urlRequest, mensaje)) 
             {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                string newJson = reader.ReadToEnd();
-                reader.Close();
-                var jsonArr = JSON.Parse(newJson);
-                Debug.Log(jsonArr);
-                if (string.IsNullOrEmpty(jsonArr["error"].Value))
+                request.method = UnityWebRequest.kHttpVerbPOST;
+                request.SetRequestHeader("Content-Type", "application/json");
+                request.SetRequestHeader("Accept", "application/json");
+                yield return request.SendWebRequest();
+                if (!request.isNetworkError && request.responseCode == 200)
                 {
-                    resultadoDigital.message = "Muy bien registro exitoso";
+                    string newJson = request.downloadHandler.text;
+                    var jsonArr = JSON.Parse(newJson);
+                    Debug.Log(jsonArr);
+                    if (string.IsNullOrEmpty(jsonArr["error"].Value))
+                    {
+                        resultadoDigital.message = "Muy bien registro exitoso";
+                    }
+                    else
+                    {
+                        resultadoDigital.isError = true;
+                        resultadoDigital.message = jsonArr["error"].Value;
+                    }
+                    resultadoDigital.result = jsonArr;
                 }
-                else
+                else 
                 {
+                    Debug.Log("Error response code = " + request.responseCode);
                     resultadoDigital.isError = true;
-                    resultadoDigital.message = jsonArr["error"].Value;
+                    resultadoDigital.message = "No se registro al usuario";
                 }
-                resultadoDigital.result = jsonArr;
             }
-            else
-            {
-                resultadoDigital.isError = true;
-                resultadoDigital.message = "No se registro al usuario";
-                // ProcessFaceError(response);
-            }
-            return resultadoDigital;
+            OnResultQueryCallback(resultadoDigital);
+            //byte[] content = Encoding.ASCII.GetBytes(mensaje);
+            //var response = UnityWebRequest.Put(urlRequest, mensaje);
+            //if (!CloudWebTools.IsErrorStatus(response))
+            //{
+            //    StreamReader reader = new StreamReader(response.GetResponseStream());
+            //    string newJson = reader.ReadToEnd();
+            //    reader.Close();
+            //    var jsonArr = JSON.Parse(newJson);
+            //    Debug.Log(jsonArr);
+            //    if (string.IsNullOrEmpty(jsonArr["error"].Value))
+            //    {
+            //        resultadoDigital.message = "Muy bien registro exitoso";
+            //    }
+            //    else
+            //    {
+            //        resultadoDigital.isError = true;
+            //        resultadoDigital.message = jsonArr["error"].Value;
+            //    }
+            //    resultadoDigital.result = jsonArr;
+            //}
+            //else
+            //{
+            //    resultadoDigital.isError = true;
+            //    resultadoDigital.message = "No se registro al usuario";
+            //    // ProcessFaceError(response);
+            //}
+            //return resultadoDigital;
         }
         
         public virtual void SendRequest()
         {
-            queryResult = Consultar();
+            StartCoroutine(Consultar());
         }
 
         public JSONArray GetArrFromNode(string nodeName)
@@ -96,6 +138,10 @@ namespace Ezphera.QueryTK
                 return queryResult.result["room_config"][nodeName].Value;
             }
             else return string.Empty;
+        }
+        protected virtual void OnResultQuery(QueryResult queryResult) 
+        {
+            
         }
     }
 }

@@ -6,6 +6,8 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Security;
+using UnityEngine.Networking;
+
 namespace Ezphera.QueryTK {
 	public class CloudWebTools
 	{
@@ -15,7 +17,7 @@ namespace Ezphera.QueryTK {
 		{
 			ServicePointManager.ServerCertificateValidationCallback = MyRemoteCertificateValidationCallback;
 			HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-
+			//UnityWebRequest.Post(requestUrl,)
 			if (contentType != string.Empty && content != null)
 			{
 				webRequest.ContentType = contentType;
