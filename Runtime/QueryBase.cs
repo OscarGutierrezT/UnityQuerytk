@@ -12,6 +12,8 @@ namespace Ezphera.QueryTK
 {
     public class QueryBase : MonoBehaviour
     {
+        [SerializeField] bool useCustomConfig;
+        [SerializeField] QueryBaseConfiguration customConfiguration;
         Action<QueryResult> OnResultQueryCallback;
         string urlRequest = "http://localhost/control-ezphera/ver-empleados.php";
         public bool sendQueryOnStart;
@@ -20,7 +22,7 @@ namespace Ezphera.QueryTK
         public List<SingleQuery> queryVars = new List<SingleQuery>(0);
         protected virtual void Awake()
         {
-            var queryConfig = Resources.Load<QueryBaseConfiguration>("QueryConfiguration");
+            var queryConfig = useCustomConfig && customConfiguration ? customConfiguration : Resources.Load<QueryBaseConfiguration>("QueryConfiguration");
             urlRequest = (queryConfig.isTest || string.IsNullOrEmpty(queryConfig.urlQuery) ? queryConfig.urlQueryTest : queryConfig.urlQuery) + queryUrlAditional;
         }
         protected virtual void Start() 
