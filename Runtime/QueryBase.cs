@@ -20,11 +20,6 @@ namespace Ezphera.QueryTK
         public QueryResult queryResult { get; protected set; }
         public string queryUrlAditional;
         public List<SingleQuery> queryVars = new List<SingleQuery>(0);
-        protected virtual void Awake()
-        {
-            var queryConfig = useCustomConfig && customConfiguration ? customConfiguration : Resources.Load<QueryBaseConfiguration>("QueryConfiguration");
-            urlRequest = (queryConfig.isTest || string.IsNullOrEmpty(queryConfig.urlQuery) ? queryConfig.urlQueryTest : queryConfig.urlQuery) + queryUrlAditional;
-        }
         protected virtual void Start() 
         {
             if (sendQueryOnStart)
@@ -43,6 +38,8 @@ namespace Ezphera.QueryTK
         protected virtual IEnumerator Consultar()
         {
             QueryResult resultadoDigital = new QueryResult();
+            var queryConfig = useCustomConfig && customConfiguration ? customConfiguration : Resources.Load<QueryBaseConfiguration>("QueryConfiguration");
+            urlRequest = (queryConfig.isTest || string.IsNullOrEmpty(queryConfig.urlQuery) ? queryConfig.urlQueryTest : queryConfig.urlQuery) + queryUrlAditional;
             //HttpWebResponse response = null;
             //Dictionary<string, string> headers = new Dictionary<string, string>();
             string mensaje = "{";
