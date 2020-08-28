@@ -12,6 +12,7 @@ namespace Ezphera.QueryTK
 {
     public class QueryBase : MonoBehaviour
     {
+        public bool enableDebug;
         [SerializeField] bool useCustomConfig;
         [SerializeField] QueryBaseConfiguration customConfiguration;
         Action<QueryResult> OnResultQueryCallback;
@@ -40,12 +41,9 @@ namespace Ezphera.QueryTK
             QueryResult resultadoDigital = new QueryResult();
             var queryConfig = useCustomConfig && customConfiguration ? customConfiguration : Resources.Load<QueryBaseConfiguration>("QueryConfiguration");
             urlRequest = (queryConfig.isTest || string.IsNullOrEmpty(queryConfig.urlQuery) ? queryConfig.urlQueryTest : queryConfig.urlQuery) + queryUrlAditional;
-            //HttpWebResponse response = null;
-            //Dictionary<string, string> headers = new Dictionary<string, string>();
             string mensaje = "{";
             for (var i = 0; i < queryVars.Count; i++)
             {
-
                 if (!string.IsNullOrEmpty(queryVars[i].infoKey))
                 {
                     mensaje += "\"" + queryVars[i].infoKey + "\":\"" + queryVars[i].inputField.text + "\"";
@@ -67,7 +65,7 @@ namespace Ezphera.QueryTK
                 {
                     string newJson = request.downloadHandler.text;
                     var jsonArr = JSON.Parse(newJson);
-                    Debug.Log(jsonArr);
+                    if(enableDebug) Debug.Log("<b>[QueryTK]</b> " + jsonArr);
                     if (string.IsNullOrEmpty(jsonArr["error"].Value))
                     {
                         resultadoDigital.message = "Muy bien registro exitoso";
@@ -81,39 +79,12 @@ namespace Ezphera.QueryTK
                 }
                 else 
                 {
-                    Debug.Log("Error response code = " + request.responseCode);
+                    if (enableDebug) Debug.Log("<b>[QueryTK]</b> Error response code = " + request.responseCode);
                     resultadoDigital.isError = true;
                     resultadoDigital.message = "No se registro al usuario";
                 }
             }
             OnResultQueryCallback(resultadoDigital);
-            //byte[] content = Encoding.ASCII.GetBytes(mensaje);
-            //var response = UnityWebRequest.Put(urlRequest, mensaje);
-            //if (!CloudWebTools.IsErrorStatus(response))
-            //{
-            //    StreamReader reader = new StreamReader(response.GetResponseStream());
-            //    string newJson = reader.ReadToEnd();
-            //    reader.Close();
-            //    var jsonArr = JSON.Parse(newJson);
-            //    Debug.Log(jsonArr);
-            //    if (string.IsNullOrEmpty(jsonArr["error"].Value))
-            //    {
-            //        resultadoDigital.message = "Muy bien registro exitoso";
-            //    }
-            //    else
-            //    {
-            //        resultadoDigital.isError = true;
-            //        resultadoDigital.message = jsonArr["error"].Value;
-            //    }
-            //    resultadoDigital.result = jsonArr;
-            //}
-            //else
-            //{
-            //    resultadoDigital.isError = true;
-            //    resultadoDigital.message = "No se registro al usuario";
-            //    // ProcessFaceError(response);
-            //}
-            //return resultadoDigital;
         }
         
         public virtual void SendRequest()
